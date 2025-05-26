@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Semester Updates</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
+      authDomain: "liveupdatepvtltd.firebaseapp.com",
+      databaseURL: "https://liveupdatepvtltd-default-rtdb.firebaseio.com",
+      projectId: "liveupdatepvtltd",
+      storageBucket: "liveupdatepvtltd.firebasestorage.app",
+      messagingSenderId: "930997114628",
+      appId: "1:930997114628:web:29f886eedfd660c866e251",
+      measurementId: "G-0D35D4KT1D"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const statusRef = ref(db, 'status');
+
+    function setStatus(person, value) {
+      set(ref(db, `status/${person}`), value);
+    }
+
+    function resetStatus() {
+      remove(statusRef);
+    }
+
+    function setupRealtime() {
+      ['person1', 'person2'].forEach(person => {
+        onValue(ref(db, `status/${person}`), (snapshot) => {
+          const status = snapshot.val();
+          const radios = document.getElementsByName(person);
+          radios.forEach(r => r.checked = (r.value === status));
+        });
+      });
+    }
+
+    window.onload = function () {
+      setupRealtime();
+      document.getElementById('resetBtn').onclick = resetStatus;
+    }
+
+    window.setStatus = setStatus;
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    h1 { text-align: center; }
+    .container { display: flex; justify-content: space-around; margin-top: 30px; }
+    .column { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .column h2 { text-align: center; }
+    .status-option { margin: 10px 0; }
+    .reset-button { margin-top: 20px; width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>Semester Updates</h1>
+  <div class="container">
+    <div class="column">
+      <h2>1st Semester</h2>
+      <div class="status-option"><input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL</div>
+      <div class="status-option"><input type="radio" name="person1" value="Not AL" onchange="setStatus('person1', this.value)"> Not AL</div>
+      <div class="status-option"><input type="radio" name="person1" value="DG" onchange="setStatus('person1', this.value)"> DG</div>
+      <div class="status-option"><input type="radio" name="person1" value="SL" onchange="setStatus('person1', this.value)"> SL</div>
+    </div>
+    <div class="column">
+      <h2>2nd Semester</h2>
+      <div class="status-option"><input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL</div>
+      <div class="status-option"><input type="radio" name="person2" value="Not AL" onchange="setStatus('person2', this.value)"> Not AL</div>
+      <div class="status-option"><input type="radio" name="person2" value="DG" onchange="setStatus('person2', this.value)"> DG</div>
+      <div class="status-option"><input type="radio" name="person2" value="SL" onchange="setStatus('person2', this.value)"> SL</div>
+    </div>
+  </div>
+  <div style="text-align:center">
+    <button id="resetBtn" class="reset-button">RESET</button>
+  </div>
+</body>
+</html>
