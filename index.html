@@ -1,9 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Live Update</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semester Updates</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      position: relative;
+    }
+
+    /* Background image with blur and dim effect */
+   
+body {
+  background-image: url('college-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(1px);
+}
+.status-option input[type="radio"] {
+  transform: scale(1.5);
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+   
+
+
+    h1 {
+      text-align: center;
+      color: #0a0000;
+      margin: 20px 0;
+      font-weight: bold;
+       text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .column {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      width: 45%;
+      margin: 10px 0;
+      transition: background-color 0.3s ease;
+    }
+
+    .column h2 {
+      text-align: center;
+      margin-bottom: 15px;
+       text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
+    }
+
+    .status-option {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+    .status-option input {
+      margin-right: 10px;
+    }
+
+    .reset-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: white;
+      border-radius: 5px;
+      background-color: #333;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .column {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Semester Updates</h1>
+  <div class="container">
+    <div class="column" id="person1-box">
+      <h2>1st Semester</h2>
+      <div class="status-option">
+        <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
+      </div>
+      <div class="status-option">
+        <input type="radio" name="person1" value="DG" onchange="setStatus('person1', this.value)"> DG
+      </div>
+      <div class="status-option">
+        <input type="radio" name="person1" value="Not AL" onchange="setStatus('person1', this.value)"> Not AL
+      </div>
+      <div class="status-option">
+        <input type="radio" name="person1" value="SL" onchange="setStatus('person1', this.value)"> SL
+      </div>
+    </div>
+    <div class="column" id="person2-box">
+      <h2>2nd Semester</h2>
+      <div class="status-option">
+        <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
+      </div>
+      <div class="status-option">
+        <input type="radio" name="person2" value="DG" onchange="setStatus('person2', this.value)"> CLG
+      </div>
+      <div class="status-option">
+        <input type="radio" name="person2" value="Not AL" onchange="setStatus('person2', this.value)"> Not AL 
+      </div>
+      <div class="status-option">
+        <input type="radio" name="person2" value="SL" onchange="setStatus('person2', this.value)"> SL
+      </div>
+    </div>
+  </div>
+  
+
   <script type="module">
-    // Import Firebase modules from CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
@@ -12,7 +154,7 @@
       authDomain: "liveupdatepvtltd.firebaseapp.com",
       databaseURL: "https://liveupdatepvtltd-default-rtdb.firebaseio.com",
       projectId: "liveupdatepvtltd",
-      storageBucket: "liveupdatepvtltd.firebasestorage.app",
+      storageBucket: "liveupdatepvtltd.appspot.com",
       messagingSenderId: "930997114628",
       appId: "1:930997114628:web:29f886eedfd660c866e251",
       measurementId: "G-0D35D4KT1D"
@@ -23,23 +165,41 @@
 
     const statusRef = ref(db, 'status');
 
-    // Handle status change
     function setStatus(person, value) {
       set(ref(db, `status/${person}`), value);
     }
 
-    // Handle reset
     function resetStatus() {
       remove(statusRef);
     }
 
-    // Set up listeners to reflect live status
+    function updateBoxColor(person, status) {
+      const box = document.getElementById(`${person}-box`);
+      switch (status) {
+        case 'AL':
+          box.style.backgroundColor = 'rgba(0, 128, 0, 0.8)'; // Green
+          break;
+        case 'Not AL':
+          box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)'; // Blue
+          break;
+        case 'DG':
+          box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)'; // Red
+          break;
+        case 'SL':
+          box.style.backgroundColor = 'rgba(255, 255, 0, 0.8)'; // Yellow
+          break;
+        default:
+          box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Default
+      }
+    }
+
     function setupRealtime() {
       ['person1', 'person2'].forEach(person => {
         onValue(ref(db, `status/${person}`), (snapshot) => {
           const status = snapshot.val();
           const radios = document.getElementsByName(person);
           radios.forEach(r => r.checked = (r.value === status));
+          updateBoxColor(person, status);
         });
       });
     }
@@ -51,36 +211,5 @@
 
     window.setStatus = setStatus;
   </script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    h1 { text-align: center; }
-    .container { display: flex; justify-content: space-around; margin-top: 30px; }
-    .column { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    .column h2 { text-align: center; }
-    .status-option { margin: 10px 0; }
-    .reset-button { margin-top: 20px; width: 100%; }
-  </style>
-</head>
-<body>
-  <h1>Live Update</h1>
-  <div class="container">
-    <div class="column">
-      <h2>Person 1</h2>
-      <div class="status-option"><input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL</div>
-      <div class="status-option"><input type="radio" name="person1" value="Not AL" onchange="setStatus('person1', this.value)"> Not AL</div>
-      <div class="status-option"><input type="radio" name="person1" value="DG" onchange="setStatus('person1', this.value)"> DG</div>
-      <div class="status-option"><input type="radio" name="person1" value="SL" onchange="setStatus('person1', this.value)"> SL</div>
-    </div>
-    <div class="column">
-      <h2>Person 2</h2>
-      <div class="status-option"><input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL</div>
-      <div class="status-option"><input type="radio" name="person2" value="Not AL" onchange="setStatus('person2', this.value)"> Not AL</div>
-      <div class="status-option"><input type="radio" name="person2" value="DG" onchange="setStatus('person2', this.value)"> DG</div>
-      <div class="status-option"><input type="radio" name="person2" value="SL" onchange="setStatus('person2', this.value)"> SL</div>
-    </div>
-  </div>
-  <div style="text-align:center">
-    <button id="resetBtn" class="reset-button">RESET</button>
-  </div>
 </body>
 </html>
