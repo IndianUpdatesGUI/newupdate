@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Semester Updates</title>
   <style>
-    /* Reset and base styles */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -18,34 +17,30 @@
       position: relative;
     }
 
-    /* Background image with blur and dim effect */
-   
-body {
-  background-image: url('college-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  backdrop-filter: blur(1px);
-}
-.status-option input[type="radio"] {
-  transform: scale(1.5);
-  margin-right: 8px;
-  cursor: pointer;
-}
+    body {
+      background-image: url('college-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      backdrop-filter: blur(1px);
+    }
 
-   
-
+    .status-option input[type="radio"] {
+      transform: scale(1.5);
+      margin-right: 8px;
+      cursor: pointer;
+    }
 
     h1 {
       text-align: center;
       color: #0a0000;
       margin: 20px 0;
       font-weight: bold;
-       text-shadow:
-    -1px -1px 0 #fff,
-     1px -1px 0 #fff,
-    -1px  1px 0 #fff,
-     1px  1px 0 #fff;
+      text-shadow:
+        -1px -1px 0 #fff,
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff;
     }
 
     .container {
@@ -68,20 +63,29 @@ body {
     .column h2 {
       text-align: center;
       margin-bottom: 15px;
-       text-shadow:
-    -1px -1px 0 #fff,
-     1px -1px 0 #fff,
-    -1px  1px 0 #fff,
-     1px  1px 0 #fff;
+      text-shadow:
+        -1px -1px 0 #fff,
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff;
     }
 
     .status-option {
-  margin: 10px 0;
-  font-weight: bold;
-}
+      margin: 10px 0;
+      font-weight: bold;
+    }
 
     .status-option input {
       margin-right: 10px;
+    }
+
+    .timestamp {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000000;
+      margin-left: 60px;
+      
     }
 
     .reset-button {
@@ -96,7 +100,6 @@ body {
       cursor: pointer;
     }
 
-    /* Responsive design */
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -126,7 +129,9 @@ body {
       <div class="status-option">
         <input type="radio" name="person1" value="SL" onchange="setStatus('person1', this.value)"> SL
       </div>
+      <div id="person1-time" class="timestamp"></div>
     </div>
+
     <div class="column" id="person2-box">
       <h2>2nd Semester</h2>
       <div class="status-option">
@@ -136,18 +141,18 @@ body {
         <input type="radio" name="person2" value="DG" onchange="setStatus('person2', this.value)"> CLG
       </div>
       <div class="status-option">
-        <input type="radio" name="person2" value="Not AL" onchange="setStatus('person2', this.value)"> Not AL 
+        <input type="radio" name="person2" value="Not AL" onchange="setStatus('person2', this.value)"> Not AL
       </div>
       <div class="status-option">
         <input type="radio" name="person2" value="SL" onchange="setStatus('person2', this.value)"> SL
       </div>
+      <div id="person2-time" class="timestamp"></div>
     </div>
   </div>
-  
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
@@ -163,51 +168,55 @@ body {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const statusRef = ref(db, 'status');
-
-    function setStatus(person, value) {
-      set(ref(db, `status/${person}`), value);
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    function resetStatus() {
-      remove(statusRef);
+    function setStatus(person, value) {
+      const timestamp = getCurrentTime();
+      set(ref(db, `status/${person}`), { value, time: timestamp });
     }
 
     function updateBoxColor(person, status) {
       const box = document.getElementById(`${person}-box`);
       switch (status) {
         case 'AL':
-          box.style.backgroundColor = 'rgba(0, 128, 0, 0.8)'; // Green
+          box.style.backgroundColor = 'rgba(0, 128, 0, 0.8)';
           break;
         case 'Not AL':
-          box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)'; // Blue
+          box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)';
           break;
         case 'DG':
-          box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)'; // Red
+          box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
           break;
         case 'SL':
-          box.style.backgroundColor = 'rgba(255, 255, 0, 0.8)'; // Yellow
+          box.style.backgroundColor = 'rgba(255, 255, 0, 0.8)';
           break;
         default:
-          box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Default
+          box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
       }
     }
 
     function setupRealtime() {
       ['person1', 'person2'].forEach(person => {
-        onValue(ref(db, `status/${person}`), (snapshot) => {
-          const status = snapshot.val();
+        const statusRef = ref(db, `status/${person}`);
+        onValue(statusRef, (snapshot) => {
+          const data = snapshot.val();
+          if (!data) return;
+          const status = data.value;
+          const time = data.time || '';
           const radios = document.getElementsByName(person);
           radios.forEach(r => r.checked = (r.value === status));
           updateBoxColor(person, status);
+          document.getElementById(`${person}-time`).textContent = `${status} selected at ${time}`;
         });
       });
     }
 
     window.onload = function () {
       setupRealtime();
-      document.getElementById('resetBtn').onclick = resetStatus;
-    }
+    };
 
     window.setStatus = setStatus;
   </script>
