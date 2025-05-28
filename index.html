@@ -75,29 +75,12 @@
       font-weight: bold;
     }
 
-    .status-option input {
-      margin-right: 10px;
-    }
-
     .timestamp {
       margin-top: 10px;
       font-size: 14px;
       font-weight: bold;
       color: #000000;
-      margin-left: 40px;
-      
-    }
-
-    .reset-button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: white;
-      border-radius: 5px;
-      background-color: #333;
-      color: #fff;
-      cursor: pointer;
+      margin-left: 60px;
     }
 
     @media (max-width: 768px) {
@@ -169,19 +152,27 @@
     const db = getDatabase(app);
 
     function getCurrentTime() {
-  const now = new Date();
-  let hours = now.getHours();
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // if 0 => 12
-  return `${hours}:${minutes} ${ampm}`;
-}
-
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
 
     function setStatus(person, value) {
       const timestamp = getCurrentTime();
       set(ref(db, `status/${person}`), { value, time: timestamp });
+
+      // Notification logic
+      if (Notification.permission === 'granted') {
+        const semester = person === 'person1' ? '1st Semester' : '2nd Semester';
+        const message = `${semester} selected ${value}`;
+        new Notification("Status Update", {
+          body: message,
+          icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
+        });
+      }
+
+      // Sound logic
+      const sound = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1155-pristine.mp3");
+      sound.play();
     }
 
     function updateBoxColor(person, status) {
@@ -222,6 +213,11 @@
 
     window.onload = function () {
       setupRealtime();
+
+      // Ask notification permission on load
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+      }
     };
 
     window.setStatus = setStatus;
