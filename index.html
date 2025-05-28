@@ -93,6 +93,20 @@
         width: 90%;
       }
     }
+
+    #notify-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: green;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
@@ -133,6 +147,8 @@
     </div>
   </div>
 
+  <button id="notify-btn" onclick="enableNotifications()">Start Notifications</button>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
@@ -151,6 +167,19 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    let sound = null;
+
+    function enableNotifications() {
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+      }
+
+      sound = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1155-pristine.mp3");
+      sound.load();
+
+      alert("Notifications & Sound Enabled!");
+    }
+
     function getCurrentTime() {
       const now = new Date();
       return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -159,20 +188,6 @@
     function setStatus(person, value) {
       const timestamp = getCurrentTime();
       set(ref(db, `status/${person}`), { value, time: timestamp });
-
-      // Notification logic
-      if (Notification.permission === 'granted') {
-        const semester = person === 'person1' ? '1st Semester' : '2nd Semester';
-        const message = `${semester} selected ${value}`;
-        new Notification("Status Update", {
-          body: message,
-          icon: "https://cdn-icons-png.flaticon.com/512/190/190411.png"
-        });
-      }
-
-      // Sound logic
-      const sound = new Audio("https://notificationsounds.com/storage/sounds/file-sounds-1155-pristine.mp3");
-      sound.play();
     }
 
     function updateBoxColor(person, status) {
@@ -185,6 +200,7 @@
           box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)';
           break;
         case 'DG':
+        case 'CLG':
           box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
           break;
         case 'SL':
@@ -192,6 +208,12 @@
           break;
         default:
           box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+      }
+    }
+
+    function showNotification(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body });
       }
     }
 
@@ -207,20 +229,23 @@
           radios.forEach(r => r.checked = (r.value === status));
           updateBoxColor(person, status);
           document.getElementById(`${person}-time`).textContent = `${status} selected at ${time}`;
+
+          showNotification(`${person === 'person1' ? 'Semester 1' : 'Semester 2'}`, `Selected: ${status} at ${time}`);
+
+          if (sound) {
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log("Sound blocked:", e));
+          }
         });
       });
     }
 
     window.onload = function () {
       setupRealtime();
-
-      // Ask notification permission on load
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        Notification.requestPermission();
-      }
     };
 
     window.setStatus = setStatus;
+    window.enableNotifications = enableNotifications;
   </script>
 </body>
 </html>
