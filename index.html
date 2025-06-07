@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Semester Updates</title>
   <style>
+    /* --- General Styles --- */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -17,77 +18,82 @@
       position: relative;
     }
 
+    /* --- Background and Layout --- */
     body {
+      /* Sets the background image and applies a blur effect */
       background-image: url('college-bg.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       backdrop-filter: blur(1px);
     }
-
-    .status-option input[type="radio"], .status-option input[type="checkbox"] {
-      transform: scale(1.5);
-      margin-right: 8px;
-      cursor: pointer;
-    }
-
-    h1 {
-      text-align: center;
-      color: #0a0000;
-      margin: 20px 0;
-      font-weight: bold;
-      text-shadow:
-        -1px -1px 0 #fff,
-         1px -1px 0 #fff,
-        -1px  1px 0 #fff,
-         1px  1px 0 #fff;
-    }
-
+    
     .container {
+      /* This is the main container that holds the two columns */
       display: flex;
-      justify-content: space-around;
+      justify-content: space-around; /* Puts space between the columns */
       flex-wrap: wrap;
       padding: 20px;
     }
 
     .column {
-      background: rgba(255, 255, 255, 0.8);
+      /* This styles the white boxes for each semester */
+      background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       width: 45%;
       margin: 10px 0;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease; /* Smooth color change */
     }
 
-    .column h2 {
+    /* --- Text and Element Styling --- */
+    h1 {
+      /* Styles the main title of the page */
       text-align: center;
-      margin-bottom: 15px;
+      color: #0a0000;
+      margin: 20px 0;
+      font-weight: bold;
+      /* This text-shadow creates a white outline, making the text readable on any background */
       text-shadow:
         -1px -1px 0 #fff,
          1px -1px 0 #fff,
         -1px  1px 0 #fff,
          1px  1px 0 #fff;
     }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
 
+    /* Styles all radio buttons and checkboxes to be larger */
+    .status-option input[type="radio"], .status-option input[type="checkbox"] {
+      transform: scale(1.5);
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    
     .status-option {
       margin: 10px 0;
       font-weight: bold;
     }
     
-    /* NEW CSS TO ALIGN BUTTONS HORIZONTALLY */
+    /* This is the special group for placing AL and WAT side-by-side */
     .horizontal-group {
-        display: flex; /* This is the key change: aligns items side-by-side */
-        align-items: center; /* Keeps them vertically centered on the line */
-        margin: 10px 0; /* Keeps the same vertical spacing as other options */
+        display: flex;           /* This is the key: it aligns items in a row */
+        align-items: center;     /* This vertically centers the buttons on the same line */
+        margin: 10px 0;          /* Keeps the same spacing as other options */
     }
 
+    /* Styles the items within the horizontal group */
     .horizontal-group .status-option {
-        margin: 0; /* Removes default margin from options inside the group */
-        margin-right: 30px; /* Adds space between the WAT and AL buttons */
+        margin: 0;               /* Removes extra vertical margin from these items */
+        margin-right: 80px;
+        margin-left: 0px;      /* Adds space between the AL and WAT buttons */
     }
 
-
+    /* Styles the timestamp text below the buttons */
     .timestamp {
       margin-top: 10px;
       font-size: 14px;
@@ -96,7 +102,9 @@
       margin-left: 40px;
     }
 
+    /* --- Responsive Design for Mobile --- */
     @media (max-width: 768px) {
+      /* When the screen is narrow, stack the columns vertically instead of side-by-side */
       .container {
         flex-direction: column;
         align-items: center;
@@ -116,10 +124,10 @@
       
       <div class="horizontal-group">
         <div class="status-option">
-          <input type="checkbox" id="wat1" onchange="setWatStatus('person1', this.checked)"> WAT
+          <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
         </div>
         <div class="status-option">
-          <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
+          <input type="checkbox" id="wat1" onchange="setWatStatus('person1', this.checked)"> WAT
         </div>
       </div>
       
@@ -132,6 +140,7 @@
       <div class="status-option">
         <input type="radio" name="person1" value="SL" onchange="setStatus('person1', this.value)"> SL
       </div>
+
       <div id="person1-wat-time" class="timestamp"></div>
       <div id="person1-time" class="timestamp"></div>
     </div>
@@ -141,10 +150,10 @@
       
       <div class="horizontal-group">
         <div class="status-option">
-          <input type="checkbox" id="wat2" onchange="setWatStatus('person2', this.checked)"> WAT
+          <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
         </div>
         <div class="status-option">
-          <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
+          <input type="checkbox" id="wat2" onchange="setWatStatus('person2', this.checked)"> WAT
         </div>
       </div>
 
@@ -157,15 +166,18 @@
       <div class="status-option">
         <input type="radio" name="person2" value="SL" onchange="setStatus('person2', this.value)"> SL
       </div>
+      
       <div id="person2-wat-time" class="timestamp"></div>
       <div id="person2-time" class="timestamp"></div>
     </div>
   </div>
 
   <script type="module">
+    // Import necessary functions from the Firebase library
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
+    // Your personal Firebase project configuration. This connects your website to your database.
     const firebaseConfig = {
       apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
       authDomain: "liveupdatepvtltd.firebaseapp.com",
@@ -177,69 +189,81 @@
       measurementId: "G-0D35D4KT1D"
     };
 
+    // Initialize the Firebase app and get a reference to the database
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // A helper function to get the current time in a friendly format (e.g., "5:30 PM")
     function getCurrentTime() {
         const now = new Date();
         let hours = now.getHours();
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
-        hours = hours ? hours : 12; // if 0 => 12
+        hours = hours ? hours : 12; // The hour '0' should be '12'
         return `${hours}:${minutes} ${ampm}`;
     }
 
+    // This function is called when you click a RADIO button (AL, DG, etc.)
     function setStatus(person, value) {
       const timestamp = getCurrentTime();
       const updates = {};
+      // This specifically updates ONLY the 'main_status' object in the database
       updates[`/status/${person}/main_status`] = { value, time: timestamp };
-      update(ref(db), updates);
+      update(ref(db), updates); // 'update' merges data instead of overwriting everything
     }
 
+    // This is the NEW function called when you click the WAT CHECKBOX
     function setWatStatus(person, isChecked) {
       const timestamp = getCurrentTime();
       const updates = {};
+      // This specifically updates ONLY the 'wat_status' object in the database
       updates[`/status/${person}/wat_status`] = { value: isChecked, time: timestamp };
       update(ref(db), updates);
     }
 
+    // This function changes the background color of a column based on the main status
     function updateBoxColor(person, status) {
       const box = document.getElementById(`${person}-box`);
       switch (status) {
         case 'AL':
-          box.style.backgroundColor = 'rgba(0, 128, 0, 0.8)';
+          box.style.backgroundColor = 'rgba(0, 128, 0, 0.8)'; // Green
           break;
         case 'Not AL':
-          box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)';
+          box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)'; // Blue
           break;
         case 'DG':
-          box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+          box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)'; // Red
           break;
         case 'SL':
-          box.style.backgroundColor = 'rgba(255, 255, 0, 0.8)';
+          box.style.backgroundColor = 'rgba(255, 255, 0, 0.8)'; // Yellow
           break;
         default:
-          box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+          box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Default white
       }
     }
 
+    // This is the main function that sets up the real-time updates
     function setupRealtime() {
+      // Loop through both 'person1' and 'person2' to set up listeners for them
       ['person1', 'person2'].forEach(person => {
         const statusRef = ref(db, `status/${person}`);
+        
+        // onValue() listens for any data changes at the specified location in the database
         onValue(statusRef, (snapshot) => {
           const data = snapshot.val();
-          if (!data) return;
+          if (!data) return; // If there's no data, do nothing
 
+          // --- Update the main status (Radio Buttons) ---
           if (data.main_status) {
             const status = data.main_status.value;
             const time = data.main_status.time || '';
-            const radios = document.getElementsByName(person);
-            radios.forEach(r => r.checked = (r.value === status));
+            document.getElementsByName(person).forEach(r => r.checked = (r.value === status));
             updateBoxColor(person, status);
             document.getElementById(`${person}-time`).textContent = `${status} selected at ${time}`;
           }
 
+          // --- Update the WAT status (Checkbox) ---
           const watTimeElement = document.getElementById(`${person}-wat-time`);
           if (data.wat_status) {
             const isChecked = data.wat_status.value;
@@ -247,25 +271,21 @@
             const checkboxId = person === 'person1' ? 'wat1' : 'wat2';
             document.getElementById(checkboxId).checked = isChecked;
             
-            if (isChecked) {
-                watTimeElement.textContent = `WAT selected at ${time}`;
-            } else {
-                watTimeElement.textContent = ''; 
-            }
+            // Only show the timestamp if the box is checked
+            watTimeElement.textContent = isChecked ? `WAT selected at ${time}` : '';
           } else {
-             watTimeElement.textContent = ''; 
+             watTimeElement.textContent = ''; // Clear timestamp if no data
           }
         });
       });
     }
 
+    // This code runs as soon as the webpage has finished loading
     window.onload = function () {
-      setupRealtime();
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        Notification.requestPermission();
-      }
+      setupRealtime(); // Start listening for database changes
     };
 
+    // Make these functions available globally so the 'onchange' in the HTML can call them
     window.setStatus = setStatus;
     window.setWatStatus = setWatStatus;
   </script>
