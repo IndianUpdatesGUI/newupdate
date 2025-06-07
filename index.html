@@ -25,7 +25,6 @@
       backdrop-filter: blur(1px);
     }
 
-    /* Style for both radio and the new checkbox */
     .status-option input[type="radio"], .status-option input[type="checkbox"] {
       transform: scale(1.5);
       margin-right: 8px;
@@ -75,10 +74,19 @@
       margin: 10px 0;
       font-weight: bold;
     }
-
-    .status-option input {
-      margin-right: 10px;
+    
+    /* NEW CSS TO ALIGN BUTTONS HORIZONTALLY */
+    .horizontal-group {
+        display: flex; /* This is the key change: aligns items side-by-side */
+        align-items: center; /* Keeps them vertically centered on the line */
+        margin: 10px 0; /* Keeps the same vertical spacing as other options */
     }
+
+    .horizontal-group .status-option {
+        margin: 0; /* Removes default margin from options inside the group */
+        margin-right: 30px; /* Adds space between the WAT and AL buttons */
+    }
+
 
     .timestamp {
       margin-top: 10px;
@@ -86,18 +94,6 @@
       font-weight: bold;
       color: #000000;
       margin-left: 40px;
-    }
-
-    .reset-button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: white;
-      border-radius: 5px;
-      background-color: #333;
-      color: #fff;
-      cursor: pointer;
     }
 
     @media (max-width: 768px) {
@@ -117,12 +113,16 @@
   <div class="container">
     <div class="column" id="person1-box">
       <h2>1st Semester</h2>
-      <div class="status-option">
-        <input type="checkbox" id="wat1" onchange="setWatStatus('person1', this.checked)"> WAT
+      
+      <div class="horizontal-group">
+        <div class="status-option">
+          <input type="checkbox" id="wat1" onchange="setWatStatus('person1', this.checked)"> WAT
+        </div>
+        <div class="status-option">
+          <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
+        </div>
       </div>
-      <div class="status-option">
-        <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
-      </div>
+      
       <div class="status-option">
         <input type="radio" name="person1" value="DG" onchange="setStatus('person1', this.value)"> DG
       </div>
@@ -138,12 +138,16 @@
 
     <div class="column" id="person2-box">
       <h2>2nd Semester</h2>
+      
+      <div class="horizontal-group">
         <div class="status-option">
-        <input type="checkbox" id="wat2" onchange="setWatStatus('person2', this.checked)"> WAT
+          <input type="checkbox" id="wat2" onchange="setWatStatus('person2', this.checked)"> WAT
+        </div>
+        <div class="status-option">
+          <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
+        </div>
       </div>
-      <div class="status-option">
-        <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
-      </div>
+
       <div class="status-option">
         <input type="radio" name="person2" value="DG" onchange="setStatus('person2', this.value)"> CLG
       </div>
@@ -160,7 +164,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
@@ -186,7 +190,6 @@
         return `${hours}:${minutes} ${ampm}`;
     }
 
-    // This function now updates ONLY the main status (AL, DG, etc.)
     function setStatus(person, value) {
       const timestamp = getCurrentTime();
       const updates = {};
@@ -194,7 +197,6 @@
       update(ref(db), updates);
     }
 
-    // NEW function to handle ONLY the WAT status
     function setWatStatus(person, isChecked) {
       const timestamp = getCurrentTime();
       const updates = {};
@@ -229,7 +231,6 @@
           const data = snapshot.val();
           if (!data) return;
 
-          // --- Handle main status (AL, DG, etc.) ---
           if (data.main_status) {
             const status = data.main_status.value;
             const time = data.main_status.time || '';
@@ -239,7 +240,6 @@
             document.getElementById(`${person}-time`).textContent = `${status} selected at ${time}`;
           }
 
-          // --- Handle WAT status (checkbox) ---
           const watTimeElement = document.getElementById(`${person}-wat-time`);
           if (data.wat_status) {
             const isChecked = data.wat_status.value;
@@ -250,10 +250,10 @@
             if (isChecked) {
                 watTimeElement.textContent = `WAT selected at ${time}`;
             } else {
-                watTimeElement.textContent = ''; // Clear timestamp if unchecked
+                watTimeElement.textContent = ''; 
             }
           } else {
-             watTimeElement.textContent = ''; // Ensure it's clear on first load
+             watTimeElement.textContent = ''; 
           }
         });
       });
@@ -266,7 +266,6 @@
       }
     };
 
-    // Make functions globally available to be called from HTML
     window.setStatus = setStatus;
     window.setWatStatus = setWatStatus;
   </script>
