@@ -25,7 +25,8 @@
       backdrop-filter: blur(1px);
     }
 
-    .status-option input[type="radio"] {
+    /* Style for both radio and the new checkbox */
+    .status-option input[type="radio"], .status-option input[type="checkbox"] {
       transform: scale(1.5);
       margin-right: 8px;
       cursor: pointer;
@@ -85,7 +86,6 @@
       font-weight: bold;
       color: #000000;
       margin-left: 40px;
-      
     }
 
     .reset-button {
@@ -118,6 +118,9 @@
     <div class="column" id="person1-box">
       <h2>1st Semester</h2>
       <div class="status-option">
+        <input type="checkbox" id="wat1" onchange="setWatStatus('person1', this.checked)"> WAT
+      </div>
+      <div class="status-option">
         <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
       </div>
       <div class="status-option">
@@ -129,11 +132,15 @@
       <div class="status-option">
         <input type="radio" name="person1" value="SL" onchange="setStatus('person1', this.value)"> SL
       </div>
+      <div id="person1-wat-time" class="timestamp"></div>
       <div id="person1-time" class="timestamp"></div>
     </div>
 
     <div class="column" id="person2-box">
       <h2>2nd Semester</h2>
+        <div class="status-option">
+        <input type="checkbox" id="wat2" onchange="setWatStatus('person2', this.checked)"> WAT
+      </div>
       <div class="status-option">
         <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
       </div>
@@ -146,13 +153,14 @@
       <div class="status-option">
         <input type="radio" name="person2" value="SL" onchange="setStatus('person2', this.value)"> SL
       </div>
+      <div id="person2-wat-time" class="timestamp"></div>
       <div id="person2-time" class="timestamp"></div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
@@ -169,19 +177,29 @@
     const db = getDatabase(app);
 
     function getCurrentTime() {
-  const now = new Date();
-  let hours = now.getHours();
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // if 0 => 12
-  return `${hours}:${minutes} ${ampm}`;
-}
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // if 0 => 12
+        return `${hours}:${minutes} ${ampm}`;
+    }
 
-
+    // This function now updates ONLY the main status (AL, DG, etc.)
     function setStatus(person, value) {
       const timestamp = getCurrentTime();
-      set(ref(db, `status/${person}`), { value, time: timestamp });
+      const updates = {};
+      updates[`/status/${person}/main_status`] = { value, time: timestamp };
+      update(ref(db), updates);
+    }
+
+    // NEW function to handle ONLY the WAT status
+    function setWatStatus(person, isChecked) {
+      const timestamp = getCurrentTime();
+      const updates = {};
+      updates[`/status/${person}/wat_status`] = { value: isChecked, time: timestamp };
+      update(ref(db), updates);
     }
 
     function updateBoxColor(person, status) {
@@ -210,12 +228,33 @@
         onValue(statusRef, (snapshot) => {
           const data = snapshot.val();
           if (!data) return;
-          const status = data.value;
-          const time = data.time || '';
-          const radios = document.getElementsByName(person);
-          radios.forEach(r => r.checked = (r.value === status));
-          updateBoxColor(person, status);
-          document.getElementById(`${person}-time`).textContent = `${status} selected at ${time}`;
+
+          // --- Handle main status (AL, DG, etc.) ---
+          if (data.main_status) {
+            const status = data.main_status.value;
+            const time = data.main_status.time || '';
+            const radios = document.getElementsByName(person);
+            radios.forEach(r => r.checked = (r.value === status));
+            updateBoxColor(person, status);
+            document.getElementById(`${person}-time`).textContent = `${status} selected at ${time}`;
+          }
+
+          // --- Handle WAT status (checkbox) ---
+          const watTimeElement = document.getElementById(`${person}-wat-time`);
+          if (data.wat_status) {
+            const isChecked = data.wat_status.value;
+            const time = data.wat_status.time || '';
+            const checkboxId = person === 'person1' ? 'wat1' : 'wat2';
+            document.getElementById(checkboxId).checked = isChecked;
+            
+            if (isChecked) {
+                watTimeElement.textContent = `WAT selected at ${time}`;
+            } else {
+                watTimeElement.textContent = ''; // Clear timestamp if unchecked
+            }
+          } else {
+             watTimeElement.textContent = ''; // Ensure it's clear on first load
+          }
         });
       });
     }
@@ -223,12 +262,13 @@
     window.onload = function () {
       setupRealtime();
       if ('Notification' in window && Notification.permission !== 'granted') {
-  Notification.requestPermission();
-}
-
+        Notification.requestPermission();
+      }
     };
 
+    // Make functions globally available to be called from HTML
     window.setStatus = setStatus;
+    window.setWatStatus = setWatStatus;
   </script>
 </body>
 </html>
