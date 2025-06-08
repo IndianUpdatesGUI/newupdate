@@ -284,5 +284,81 @@
     window.setStatus = setStatus;
     window.setWatStatus = setWatStatus;
   </script>
+  <!-- Add this script tag just before closing </body> -->
+<script type="module">
+  // Existing code remains unchanged...
+
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-messaging.js";
+
+  const messaging = getMessaging(app);
+
+  // Register service worker and get token
+  navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    .then((registration) => {
+      console.log('Service Worker registered');
+      // Request permission and get token
+      return Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          getToken(messaging, {
+            vapidKey: 'BONSIgt-x8xTIlh0zQaMONqFdOArws4UUe8V8Tz1-SJEHveryFX27nl1hBkXlfZv1I8XY5IJQJZMzNmVfDf03O8', // Replace with your actual key
+            serviceWorkerRegistration: registration
+          }).then((currentToken) => {
+            if (currentToken) {
+              console.log('FCM Token:', currentToken);
+              // Optionally save to your database
+            } else {
+              console.log('No registration token available.');
+            }
+          }).catch((err) => {
+            console.error('An error occurred while retrieving token.', err);
+          });
+        } else {
+          console.log('Notification permission denied');
+        }
+      });
+    });
+
+  // Listen for foreground messages
+  onMessage(messaging, (payload) => {
+    console.log('Message received. ', payload);
+    alert(payload.notification.title + "\n" + payload.notification.body);
+  });
+
+  // Send notification (testing function)
+  async function sendNotification(title, body) {
+    const response = await fetch("https://fcm.googleapis.com/v1/projects/liveupdatepvtltd/messages:send", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer YOUR_OAUTH2_ACCESS_TOKEN", // Use service account token here
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: {
+          notification: {
+            title,
+            body
+          },
+          webpush: {
+            fcm_options: {
+              link: window.location.href
+            }
+          },
+          topic: "all"
+        }
+      })
+    });
+
+    const data = await response.json();
+    console.log("Push sent:", data);
+  }
+
+  // Example test button to trigger notification
+  window.sendTestNotification = () => sendNotification("Semester Update", "SL selected by 1st Semester");
+
+</script>
+
+<!-- Temporary Button (for manual testing only) -->
+<button style="position:fixed;bottom:10px;right:10px;" onclick="sendTestNotification()">Notify Test</button>
+
 </body>
 </html>
