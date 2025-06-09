@@ -178,59 +178,19 @@
   </div>
 
   <script type="module">
-    await Notification.requestPermission();
-
-    
-
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-messaging.js";
-
-async function initFCM() {
-  if ('serviceWorker' in navigator) {
-    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-    const messaging = getMessaging(app);
-
-
-    const vapidKey = "BH29N_jZscPwodEIDT0aC7o9l_WGmepP5cS31BViAYrG0xGaPrryFpA_zx7z0eLnJc1zTs0FihVttH2a3J5AihM"; // Replace with your actual key
-
-    try {
-      const currentToken = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
-      if (currentToken) {
-        console.log('🔔 FCM Token:', currentToken);
-
-        // 🔥 Save to Firebase Database (add this)
-        const db = getDatabase(app);
-
-        const tokenRef = ref(db, 'subscribers/' + currentToken);
-        set(tokenRef, true);
-      } else {
-        console.log('⚠️ No registration token available. Request permission to generate one.');
-      }
-    } catch (err) {
-      console.error('❌ An error occurred while retrieving token.', err);
-    }
-
-    // Handle foreground messages
-    onMessage(messaging, (payload) => {
-      console.log('📩 Foreground Message received:', payload);
-      new Notification(payload.notification.title, {
-        body: payload.notification.body,
-      });
-    });
-  }
-}
-
     // --- JAVASCRIPT IS UNCHANGED ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDNH6BsFOyMDNVf-02Qp67zqDwYzfPZKAo",
-  authDomain: "live-6404e.firebaseapp.com",
-  projectId: "live-6404e",
-  storageBucket: "live-6404e.firebasestorage.app",
-  messagingSenderId: "1081821552530",
-  appId: "1:1081821552530:web:b556b357d958d1fe5d2b4b",
-  measurementId: "G-KQ92WRN4PC"
+      apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
+      authDomain: "liveupdatepvtltd.firebaseapp.com",
+      databaseURL: "https://liveupdatepvtltd-default-rtdb.firebaseio.com",
+      projectId: "liveupdatepvtltd",
+      storageBucket: "liveupdatepvtltd.appspot.com",
+      messagingSenderId: "930997114628",
+      appId: "1:930997114628:web:29f886eedfd660c866e251",
+      measurementId: "G-0D35D4KT1D"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -252,34 +212,6 @@ async function initFCM() {
       updates[`/status/${person}/main_status`] = { value, time: timestamp };
       update(ref(db), updates);
     }
-    // 🔔 This function sends the notification
-async function sendPushNotification(title, body) {
-  try {
-    const response = await fetch("https://fcm.googleapis.com/fcm/send", {
-      method: "POST",
-      headers: {
-        "Authorization": "BH29N_jZscPwodEIDT0aC7o9l_WGmepP5cS31BViAYrG0xGaPrryFpA_zx7z0eLnJc1zTs0FihVttH2a3J5AihM",  // 🛑 Replace this!
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        notification: {
-          title: title,
-          body: body
-        },
-        to: "/topics/all"  // Sends to everyone subscribed to topic 'all'
-      })
-    });
-
-    if (response.ok) {
-      console.log("✅ Notification sent successfully!");
-    } else {
-      console.error("❌ Failed to send notification", await response.text());
-    }
-  } catch (err) {
-    console.error("❌ Error sending notification:", err);
-  }
-}
-
 
     function setWatStatus(person, isChecked) {
       const timestamp = getCurrentTime();
@@ -287,7 +219,6 @@ async function sendPushNotification(title, body) {
       updates[`/status/${person}/wat_status`] = { value: isChecked, time: timestamp };
       update(ref(db), updates);
     }
-
 
     function updateBoxColor(person, status) {
       const box = document.getElementById(`${person}-box`);
@@ -350,28 +281,10 @@ async function sendPushNotification(title, body) {
       if ('Notification' in window && Notification.permission !== 'granted') {
         Notification.requestPermission();
       }
-      window.onload = () => {
-  initFCM(); // 🔥 Ask for push notification permission
-  syncStatus(); // your existing function
-};
-
     };
 
     window.setStatus = setStatus;
     window.setWatStatus = setWatStatus;
-
-    // 🔐 Ask browser to allow notifications
-Notification.requestPermission().then(permission => {
-  if (permission === "granted") {
-    console.log("✅ Notification permission granted!");
-  } else {
-    console.log("❌ Notification permission denied or dismissed.");
-  }
-});
-
-
-    
   </script>
 </body>
 </html>
-<!-- Note: Ensure you have the college-bg.jpg image in the same directory as this HTML file for the background to work. -->
