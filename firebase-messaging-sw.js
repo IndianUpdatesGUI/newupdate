@@ -55,3 +55,17 @@ self.addEventListener('notificationclick', function(event) {
   );
 });
 
+messaging.onBackgroundMessage(function(payload) {
+  console.log('📩 Received background message ', payload);
+
+  // Check payload structure
+  const notificationTitle = payload.data?.title || 'New message!';
+  const notificationOptions = {
+    body: payload.data?.body || 'You have a notification.',
+    icon: '/icon.png',
+  };
+
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+
