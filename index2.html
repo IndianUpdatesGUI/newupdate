@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secret Status Buttons</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      background: #f1f1f1;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .button {
+      display: block;
+      width: 90%;
+      max-width: 300px;
+      margin: 10px auto;
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .p1-available { background-color: #4CAF50; }
+    .p1-not { background-color: #f44336; }
+    .p2-available { background-color: #2196F3; }
+    .p2-not { background-color: #ff9800; }
+
+    .button:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <h2>Secret Notification Panel</h2>
+
+  <button class="button p1-available" onclick="sendEmail('Person 1 is Available')">Person 1: Available</button>
+  <button class="button p1-not" onclick="sendEmail('Person 1 is Not Available')">Person 1: Not Available</button>
+  <button class="button p2-available" onclick="sendEmail('Person 2 is Available')">Person 2: Available</button>
+  <button class="button p2-not" onclick="sendEmail('Person 2 is Not Available')">Person 2: Not Available</button>
+
+  <script>
+    (function() {
+      emailjs.init("3s6s-R6KhOhVVvqGJ");
+    })();
+
+    function sendEmail(message) {
+      emailjs.send("service_94sxhv7", "template_ozdxa0r", {
+        message: message
+      })
+      .then(function(response) {
+        alert("✅ Notification Sent: " + message);
+      }, function(error) {
+        alert("❌ Failed to send: " + error.text);
+      });
+    }
+  </script>
+</body>
+</html>
