@@ -8,7 +8,9 @@ firebase.initializeApp({
   apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
   authDomain: "liveupdatepvtltd.firebaseapp.com",
   projectId: "liveupdatepvtltd",
-  storageBucket: "liveupdatepvtltd.firebasestorage.app",
+  storageBucket: "liveupdatepvtltd.appspot.com",
+
+
   messagingSenderId: "930997114628",
   appId:"1:930997114628:web:29f886eedfd660c866e251",
 });
@@ -19,12 +21,20 @@ const messaging = firebase.messaging();
 // 📩 Listen for background messages
 messaging.onBackgroundMessage(function(payload) {
   console.log('📨 Received background message ', payload);
+  self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow('https://ephemeral-bonbon-45e29e.netlify.app/') // Replace with your app URL or route
+  );
+});
 
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: '/icon.png', // Optional: path to icon
-  };
+
+  const notificationTitle = payload.notification?.title || "New Notification!";
+const notificationOptions = {
+  body: payload.notification?.body || "You have a new message.",
+  icon: '/icon.png',
+};
+
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
