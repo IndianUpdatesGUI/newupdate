@@ -190,7 +190,7 @@ async function initFCM() {
     const messaging = getMessaging(app);
 
 
-    const vapidKey = "BJLPfJ6DFU-ig_k_of9HA8H2wI6bWxe00bsmwl2_BHIIPyJZbHE5r0WWVrpmupATAtGMk4dKqnBpHoRxrR3i49M"; // Replace with your actual key
+    const vapidKey = "BH29N_jZscPwodEIDT0aC7o9l_WGmepP5cS31BViAYrG0xGaPrryFpA_zx7z0eLnJc1zTs0FihVttH2a3J5AihM"; // Replace with your actual key
 
     try {
       const currentToken = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
@@ -224,14 +224,13 @@ async function initFCM() {
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
-      authDomain: "liveupdatepvtltd.firebaseapp.com",
-      databaseURL: "https://liveupdatepvtltd-default-rtdb.firebaseio.com",
-      projectId: "liveupdatepvtltd",
-      storageBucket: "liveupdatepvtltd.appspot.com",
-      messagingSenderId: "930997114628",
-      appId: "1:930997114628:web:29f886eedfd660c866e251",
-      measurementId: "G-0D35D4KT1D"
+      apiKey: "AIzaSyDNH6BsFOyMDNVf-02Qp67zqDwYzfPZKAo",
+  authDomain: "live-6404e.firebaseapp.com",
+  projectId: "live-6404e",
+  storageBucket: "live-6404e.firebasestorage.app",
+  messagingSenderId: "1081821552530",
+  appId: "1:1081821552530:web:b556b357d958d1fe5d2b4b",
+  measurementId: "G-KQ92WRN4PC"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -259,7 +258,7 @@ async function sendPushNotification(title, body) {
     const response = await fetch("https://fcm.googleapis.com/fcm/send", {
       method: "POST",
       headers: {
-        "Authorization": "BJLPfJ6DFU-ig_k_of9HA8H2wI6bWxe00bsmwl2_BHIIPyJZbHE5r0WWVrpmupATAtGMk4dKqnBpHoRxrR3i49M",  // 🛑 Replace this!
+        "Authorization": "BH29N_jZscPwodEIDT0aC7o9l_WGmepP5cS31BViAYrG0xGaPrryFpA_zx7z0eLnJc1zTs0FihVttH2a3J5AihM",  // 🛑 Replace this!
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
