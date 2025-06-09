@@ -5,14 +5,12 @@ importScripts('https://www.gstatic.com/firebasejs/10.11.0/firebase-messaging-com
 
 // 🔐 Your Firebase Project Configuration
 firebase.initializeApp({
-  apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
-  authDomain: "liveupdatepvtltd.firebaseapp.com",
-  projectId: "liveupdatepvtltd",
-  storageBucket: "liveupdatepvtltd.appspot.com",
-
-
-  messagingSenderId: "930997114628",
-  appId:"1:930997114628:web:29f886eedfd660c866e251",
+  apiKey: "AIzaSyDNH6BsFOyMDNVf-02Qp67zqDwYzfPZKAo",
+  authDomain: "live-6404e.firebaseapp.com",
+  projectId: "live-6404e",
+  storageBucket: "live-6404e.firebasestorage.app",
+  messagingSenderId: "1081821552530",
+  appId: "1:1081821552530:web:b556b357d958d1fe5d2b4b",
 });
 
 // 🔔 Initialize messaging
