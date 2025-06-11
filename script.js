@@ -124,6 +124,7 @@
     window.setWatStatus = setWatStatus;
     window.updateTime = updateTime;
     window.resetBox = resetBox;
+    window.syncMessage = syncMessage; 
 
 
     function updateTime(sem) {
