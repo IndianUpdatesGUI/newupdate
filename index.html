@@ -232,19 +232,53 @@
   <div class="message-container">
     <div class="box" id="semester1Box">
       <div class="header">Semester 1 <span class="timestamp" id="time1"></span></div>
-      <input type="text" class="message" id="msg1" placeholder="Type something..." oninput="updateTime('1')" />
-      <button class="reset-btn" onclick="resetBox('1')">RESET</button>
+     <input type="text" class="message" id="msg1" placeholder="Type something..." oninput="updateTime('1'); syncMessage('1')" />
+     <button class="reset-btn" onclick="resetBox('1')">RESET</button>
     </div>
     <div class="box" id="semester2Box">
       <div class="header">Semester 2 <span class="timestamp" id="time2"></span></div>
-      <input type="text" class="message" id="msg2" placeholder="Type something..." oninput="updateTime('2')" />
+    <input type="text" class="message" id="msg2" placeholder="Type something..." oninput="updateTime('2'); syncMessage('2')" />
+
       <button class="reset-btn" onclick="resetBox('2')">RESET</button>
     </div>
   </div>
 
+
+
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+    function setupMessageRealtime() {
+  ['1', '2'].forEach(sem => {
+    const msgRef = ref(db, `messages/semester${sem}`);
+    onValue(msgRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        document.getElementById(`msg${sem}`).value = data.value || '';
+        document.getElementById(`time${sem}`).innerText = data.time ? `at ${data.time}` : '';
+      } else {
+        document.getElementById(`msg${sem}`).value = '';
+        document.getElementById(`time${sem}`).innerText = '';
+      }
+    });
+  });
+}
+
+    
+
+   
+   
+    function syncMessage(sem) {
+  const value = document.getElementById(`msg${sem}`).value;
+  const timestamp = getCurrentTime();
+  const updates = {};
+  updates[`/messages/semester${sem}`] = { value, time: timestamp };
+  update(ref(db), updates);
+}
+
+
+    
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgtGqEp7V8LAXtqyO3Ac2JZ4l8ESS4tjw",
@@ -324,12 +358,13 @@
       });
     }
 
-    window.onload = function () {
-      setupRealtime();
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        Notification.requestPermission();
-      }
-    };
+ window.onload = function () {
+  setupRealtime();
+  setupMessageRealtime(); // Add this line to enable live message sync
+  if ('Notification' in window && Notification.permission !== 'granted') {
+    Notification.requestPermission();
+  }
+};
 
     window.setStatus = setStatus;
     window.setWatStatus = setWatStatus;
@@ -345,11 +380,13 @@
       hours = hours % 12 || 12;
       document.getElementById(`time${sem}`).innerText = `at ${hours}:${minutes} ${ampm}`;
     }
+function resetBox(sem) {
+  const msgRef = ref(db, `/messages/semester${sem}`);
+  update(msgRef, { value: '', time: '' });
+  document.getElementById(`msg${sem}`).value = '';
+  document.getElementById(`time${sem}`).innerText = '';
+}
 
-    function resetBox(sem) {
-      document.getElementById(`msg${sem}`).value = '';
-      document.getElementById(`time${sem}`).innerText = '';
-    }
   </script>
 </body>
 </html>
