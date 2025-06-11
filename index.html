@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Semester Updates</title>
+  <title>Semester Updates & UI</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
   <style>
     * {
       box-sizing: border-box;
@@ -12,18 +17,16 @@
     }
 
     body, html {
-      height: 100%;
-      font-family: Arial, sans-serif;
-      position: relative;
-    }
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: url('college-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  font-family: 'Poppins', sans-serif;
+  height: 100%;
+}
 
-    body {
-      background-image: url('college-bg.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      backdrop-filter: blur(0px);
-    }
 
     h1 {
       text-align: center;
@@ -37,7 +40,8 @@
          1px  1px 0 #fff;
     }
 
-    .container {
+    /* DESIGN 1 STYLES */
+    .status-container {
       display: flex;
       justify-content: space-around;
       flex-wrap: wrap;
@@ -51,62 +55,107 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       width: 45%;
       margin: 10px 0;
-      transition: background-color 0.3s ease;
     }
 
     .column h2 {
       text-align: center;
       margin-bottom: 30px;
-       text-shadow:
+      text-shadow:
         -1px -1px 0 #fff,
          1px -1px 0 #fff,
         -1px  1px 0 #fff,
          1px  1px 0 #fff;
-       /* MODIFIED: Increased space below title */
     }
 
-    /* MODIFIED: This now perfectly aligns the button and its label */
     .status-option {
       display: flex;
       align-items: center;
-      margin-bottom: 15px; /* MODIFIED: Increased space between options */
+      margin-bottom: 15px;
       font-weight: bold;
     }
 
     .status-option input[type="radio"], .status-option input[type="checkbox"] {
       transform: scale(1.5);
-      margin-right: 12px; /* MODIFIED: Increased space between button and text */
+      margin-right: 12px;
       cursor: pointer;
     }
-    
+
     .horizontal-group {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px; /* MODIFIED: Matched spacing */
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
     }
 
     .horizontal-group .status-option {
-        margin: 0;
-        margin-right: 30px; 
+      margin: 0;
+      margin-right: 30px;
     }
 
-    /* MODIFIED: Removed fixed margin-left to prevent overlap */
+    .timestamp-wrapper {
+      padding-left: 20px;
+    }
+
     .timestamp {
-      margin-top: 5px; /* MODIFIED: Reduced top margin */
+      margin-top: 5px;
       font-size: 14px;
       font-weight: bold;
       color: #000000;
-      /* The problematic margin-left is now gone */
     }
 
-    /* NEW RULE: This container ensures timestamps are indented with the buttons */
-    .timestamp-wrapper {
-        padding-left: 20px; /* Indents the timestamps */
+    /* DESIGN 2 STYLES */
+    .message-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 60px;
+      margin-bottom: 60px;
+      font-family: 'Poppins', sans-serif;
     }
 
+    .box {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 250px;
+    }
+
+    .header {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .message {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+
+    .reset-btn {
+      width: 100%;
+      padding: 8px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .reset-btn:hover {
+      background-color: #0056b3;
+    }
 
     @media (max-width: 768px) {
-      .container {
+      .status-container {
         flex-direction: column;
         align-items: center;
       }
@@ -114,15 +163,22 @@
       .column {
         width: 90%;
       }
+
+      .message-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Semester Updates</h1>
-  <div class="container">
+
+  <!-- DESIGN 1 SECTION -->
+  <div class="status-container">
     <div class="column" id="person1-box">
       <h2>1st Semester</h2>
-      
       <div class="horizontal-group">
         <div class="status-option">
           <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
@@ -131,7 +187,6 @@
           <input type="checkbox" id="wat1" onchange="setWatStatus('person1', this.checked)"> WAT
         </div>
       </div>
-      
       <div class="status-option">
         <input type="radio" name="person1" value="DG" onchange="setStatus('person1', this.value)"> DG
       </div>
@@ -141,16 +196,14 @@
       <div class="status-option">
         <input type="radio" name="person1" value="SL" onchange="setStatus('person1', this.value)"> SL
       </div>
-      
       <div class="timestamp-wrapper">
-          <div id="person1-wat-time" class="timestamp"></div>
-          <div id="person1-time" class="timestamp"></div>
+        <div id="person1-wat-time" class="timestamp"></div>
+        <div id="person1-time" class="timestamp"></div>
       </div>
     </div>
 
     <div class="column" id="person2-box">
       <h2>2nd Semester</h2>
-      
       <div class="horizontal-group">
         <div class="status-option">
           <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
@@ -159,7 +212,6 @@
           <input type="checkbox" id="wat2" onchange="setWatStatus('person2', this.checked)"> WAT
         </div>
       </div>
-
       <div class="status-option">
         <input type="radio" name="person2" value="DG" onchange="setStatus('person2', this.value)"> CLG
       </div>
@@ -169,16 +221,28 @@
       <div class="status-option">
         <input type="radio" name="person2" value="SL" onchange="setStatus('person2', this.value)"> SL
       </div>
-      
       <div class="timestamp-wrapper">
-          <div id="person2-wat-time" class="timestamp"></div>
-          <div id="person2-time" class="timestamp"></div>
+        <div id="person2-wat-time" class="timestamp"></div>
+        <div id="person2-time" class="timestamp"></div>
       </div>
     </div>
   </div>
 
+  <!-- DESIGN 2 SECTION -->
+  <div class="message-container">
+    <div class="box" id="semester1Box">
+      <div class="header">Semester 1 <span class="timestamp" id="time1"></span></div>
+      <input type="text" class="message" id="msg1" placeholder="Type something..." oninput="updateTime('1')" />
+      <button class="reset-btn" onclick="resetBox('1')">RESET</button>
+    </div>
+    <div class="box" id="semester2Box">
+      <div class="header">Semester 2 <span class="timestamp" id="time2"></span></div>
+      <input type="text" class="message" id="msg2" placeholder="Type something..." oninput="updateTime('2')" />
+      <button class="reset-btn" onclick="resetBox('2')">RESET</button>
+    </div>
+  </div>
+
   <script type="module">
-    // --- JAVASCRIPT IS UNCHANGED ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
@@ -197,13 +261,13 @@
     const db = getDatabase(app);
 
     function getCurrentTime() {
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; 
-        return `${hours}:${minutes} ${ampm}`;
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      return `${hours}:${minutes} ${ampm}`;
     }
 
     function setStatus(person, value) {
@@ -223,20 +287,11 @@
     function updateBoxColor(person, status) {
       const box = document.getElementById(`${person}-box`);
       switch (status) {
-        case 'AL':
-          box.style.backgroundColor = 'rgba(0, 128, 0, 0.8)';
-          break;
-        case 'Not AL':
-          box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)';
-          break;
-        case 'DG':
-          box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
-          break;
-        case 'SL':
-          box.style.backgroundColor = 'rgba(255, 255, 0, 0.8)';
-          break;
-        default:
-          box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        case 'AL': box.style.backgroundColor = 'rgba(0, 128, 0, 0.8)'; break;
+        case 'Not AL': box.style.backgroundColor = 'rgba(0, 0, 255, 0.8)'; break;
+        case 'DG': box.style.backgroundColor = 'rgba(255, 0, 0, 0.8)'; break;
+        case 'SL': box.style.backgroundColor = 'rgba(255, 255, 0, 0.8)'; break;
+        default: box.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
       }
     }
 
@@ -250,27 +305,20 @@
           if (data.main_status) {
             const status = data.main_status.value;
             const time = data.main_status.time || '';
-            const radios = document.getElementsByName(person);
-            radios.forEach(r => r.checked = (r.value === status));
+            document.getElementsByName(person).forEach(r => r.checked = (r.value === status));
             updateBoxColor(person, status);
             document.getElementById(`${person}-time`).textContent = `${status} selected at ${time}`;
           }
 
           const watTimeElement = document.getElementById(`${person}-wat-time`);
-          const mainTimeElement = document.getElementById(`${person}-time`);
-
+          const checkboxId = person === 'person1' ? 'wat1' : 'wat2';
           if (data.wat_status) {
             const isChecked = data.wat_status.value;
             const time = data.wat_status.time || '';
-            const checkboxId = person === 'person1' ? 'wat1' : 'wat2';
             document.getElementById(checkboxId).checked = isChecked;
             watTimeElement.textContent = isChecked ? `WAT selected at ${time}` : '';
           } else {
-             watTimeElement.textContent = ''; 
-          }
-
-          if(!data.main_status) {
-            mainTimeElement.textContent = '';
+            watTimeElement.textContent = '';
           }
         });
       });
@@ -285,6 +333,23 @@
 
     window.setStatus = setStatus;
     window.setWatStatus = setWatStatus;
+    window.updateTime = updateTime;
+    window.resetBox = resetBox;
+
+
+    function updateTime(sem) {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes().toString().padStart(2, '0');
+      let ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      document.getElementById(`time${sem}`).innerText = `at ${hours}:${minutes} ${ampm}`;
+    }
+
+    function resetBox(sem) {
+      document.getElementById(`msg${sem}`).value = '';
+      document.getElementById(`time${sem}`).innerText = '';
+    }
   </script>
 </body>
 </html>
