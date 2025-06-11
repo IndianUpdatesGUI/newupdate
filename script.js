@@ -48,6 +48,24 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+function syncMessage(id) {
+  const message = document.getElementById(`msg${id}`).value;
+  set(ref(db, `messages/msg${id}`), {
+    text: message,
+    time: new Date().toLocaleTimeString();
+  
+}
+
+'1', '2'].forEach(id => {
+  const msgInput = document.getElementById(`msg${id}`);
+  const timeSpan = document.getElementById(`time${id}`);
+  onValue(ref(db, `messages/msg${id}`), (snapshot) => {
+    const data = snapshot.val();
+    if (data && msgInput) {
+      msgInput.value = data.text || '';
+      timeSpan.textContent = data.time || '';
+    }
+
     function getCurrentTime() {
       const now = new Date();
       let hours = now.getHours();
