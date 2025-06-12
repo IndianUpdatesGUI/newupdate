@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "WAT": "🔔"
       };
 
-      const message = `<b><span style="color: black;">${emojiMap[selectedStatus] || ""} ${personLabel} selected ${selectedStatus}</span></b>`;
+      const message = `${emojiMap[selectedStatus] || ""} ${personLabel} selected ${selectedStatus}`;
 
       emailjs.send("service_cnje7ja", "template_wf9h6xg", {
         message: message
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "WAT": "🔔"
       };
 
-      const message = `<b><span style="color: black;">${emojiMap[selectedStatus] || ""} ${personLabel} selected ${selectedStatus}</span></b>`;
+      const message = `${emojiMap[selectedStatus] || ""} ${personLabel} selected ${selectedStatus}`;
 
       emailjs.send("service_cnje7ja", "template_wf9h6xg", {
         message: message
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const isActive = this.classList.toggle("active");
 
       if (isActive) {
-        const message = `<b><span style='color: black;'>🔔 ${personLabel} selected WAT</span></b>`;
+        const message = `🔔 ${personLabel} selected WAT`;
 
         lastSelected[person] = "WAT"; // store as last for notify too
 
