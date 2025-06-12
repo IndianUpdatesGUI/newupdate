@@ -8,13 +8,22 @@ document.addEventListener("DOMContentLoaded", function () {
       const personLabel = person === "person1" ? "Semester 1" : "Semester 2";
       const selectedStatus = this.value;
 
-      const message = `${personLabel} selected: ${selectedStatus}`;
+      // Define color for each status
+      const statusColors = {
+        "AL": "green",
+        "NOT AL": "blue",
+        "SL": "orange",
+        "DG": "red"
+      };
+
+      const color = statusColors[selectedStatus] || "black"; // fallback to black
+      const message = `<b><span style="color: ${color};">${personLabel} selected ${selectedStatus}</span></b>`;
 
       emailjs.send("service_cnje7ja", "template_wf9h6xg", {
         message: message
       })
-    .then(() => console.log("✅ Email sent"))
-.catch(error => console.error("❌ Email failed:", error));
+      .then(() => console.log("✅ Email sent"))
+      .catch(error => console.error("❌ Email failed:", error));
     });
   });
 });
