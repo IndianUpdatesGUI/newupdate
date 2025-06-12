@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const isActive = this.classList.toggle("active");
 
       if (isActive) {
-        const message = `🔔 ${personLabel} selected WAT`;
+        const message = `🔔⏰ ${personLabel} selected WAT`;
 
         lastSelected[person] = "WAT"; // store as last for notify too
 
