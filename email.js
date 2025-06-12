@@ -5,19 +5,30 @@ document.addEventListener("DOMContentLoaded", function () {
     radio.addEventListener("change", function () {
       const parent = this.closest(".person-box");
       const person = parent?.dataset.person;
-      const personLabel = person === "person1" ? "Semester 1" : "Semester 2";
+      const personLabel = person === "person1" ? "👨‍🎓 Semester 1" : "👩‍🎓 Semester 2";
       const selectedStatus = this.value;
 
-      // Define color for each status
-      const statusColors = {
-        "AL": "green",
-        "NOT AL": "blue",
-        "SL": "orange",
-        "DG": "red"
-      };
+      // Choose emoji based on status
+      let statusEmoji = "";
+      switch (selectedStatus) {
+        case "AL":
+          statusEmoji = "🟢";
+          break;
+        case "DG":
+          statusEmoji = "🔴";
+          break;
+        case "Not AL":
+          statusEmoji = "🔵";
+          break;
+        case "SL":
+          statusEmoji = "🟡";
+          break;
+        default:
+          statusEmoji = "ℹ️";
+      }
 
-      const color = statusColors[selectedStatus] || "black"; // fallback to black
-      const message = `<b><span style="color: ${color};">${personLabel} selected ${selectedStatus}</span></b>`;
+      // Final message with emoji
+      const message = `${personLabel} selected ${selectedStatus} ${statusEmoji}`;
 
       emailjs.send("service_cnje7ja", "template_wf9h6xg", {
         message: message
