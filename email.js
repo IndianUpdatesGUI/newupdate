@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       lastSelected[person] = selectedStatus;
 
-      const message = `${emojiMap[selectedStatus] || ""} ${personLabel} selected ${selectedStatus}`;
+      const emoji = emojiMap[selectedStatus] || "";
+const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
 
       emailjs.send("service_cnje7ja", "template_wf9h6xg", {
         message: message
