@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
       emailjs.send("service_cnje7ja", "template_wf9h6xg", {
         message: message
       })
-      .then(() => alert("✅ Sent: " + message))
-      .catch(error => alert("❌ Failed: " + error.text));
+    .then(() => console.log("✅ Email sent"))
+.catch(error => console.error("❌ Email failed:", error));
     });
   });
 });
