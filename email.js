@@ -1,9 +1,3 @@
-// ✅ Load EmailJS after SDK is ready
-window.addEventListener("DOMContentLoaded", function () {
-  // Initialize EmailJS with your new public key
-  emailjs.init("dHZgHupkRY9hnhat5");
-
-  // ✅ Attach email sending to every radio button
 document.addEventListener("DOMContentLoaded", function () {
   emailjs.init("dHZgHupkRY9hnhat5");
 
