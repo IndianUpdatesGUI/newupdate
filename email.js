@@ -1,7 +1,5 @@
-// ✅ email.js (CORS Fixed + v4-compatible + Notify animation)
 document.addEventListener("DOMContentLoaded", function () {
-  // ✅ 1. Initialize EmailJS with your PUBLIC KEY
-  emailjs.init("dHZgHupkRY9hnhat5"); // Replace this with your actual EmailJS public key
+  const formEndpoint = "https://formspree.io/f/mldnbzvr";
 
   const lastSelected = {
     person1: null,
@@ -16,7 +14,24 @@ document.addEventListener("DOMContentLoaded", function () {
     "WAT": "🔔"
   };
 
-  // ✅ 2. Handle status button selection (AL, DG, etc.)
+  function sendEmail(message) {
+    fetch(formEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Email failed");
+      console.log("✅ Email sent via Formspree");
+    })
+    .catch(error => {
+      console.error("❌ Email failed via Formspree:", error);
+    });
+  }
+
+  // Radio buttons
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener("change", function () {
       const parent = this.closest(".person-box");
@@ -28,14 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const emoji = emojiMap[selectedStatus] || "";
       const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
-
-      emailjs.send("service_cnje7ja", "template_wf9h6xg", { message })
-        .then(() => console.log("✅ Email sent"))
-        .catch(err => console.error("❌ Email failed:", err));
+      sendEmail(message);
     });
   });
 
-  // ✅ 3. Handle NOTIFY button
+  // Notify button
   document.querySelectorAll(".notify-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
@@ -50,27 +62,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const emoji = emojiMap[selectedStatus] || "";
       const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
+      sendEmail(message);
 
-      emailjs.init("dHZgHupkRY9hnhat5"); // Replace this with your actual EmailJS public key
-
-
-      emailjs.send("service_cnje7ja", "template_wf9h6xg", { message })
-        .then(() => {
-          console.log("✅ NOTIFY Email sent");
-
-          // ✅ Animate button
-          button.classList.add("clicked");
-          button.style.backgroundColor = "#28a745";
-          setTimeout(() => {
-            button.classList.remove("clicked");
-            button.style.backgroundColor = "#f0c14b";
-          }, 2000);
-        })
-        .catch(err => console.error("❌ NOTIFY Email failed:", err));
+      // Animation
+      button.classList.add("clicked");
+      button.style.backgroundColor = "#28a745";
+      setTimeout(() => {
+        button.classList.remove("clicked");
+        button.style.backgroundColor = "#f0c14b";
+      }, 2000);
     });
   });
 
-  // ✅ 4. Handle WAT toggle button
+  // WAT toggle
   document.querySelectorAll(".wat-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
@@ -82,10 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isActive) {
         const message = `🔔⏰ ${personLabel} selected WAT`;
         lastSelected[person] = "WAT";
-
-        emailjs.send("service_cnje7ja", "template_wf9h6xg", { message })
-          .then(() => console.log("✅ WAT Email sent"))
-          .catch(err => console.error("❌ WAT Email failed:", err));
+        sendEmail(message);
       }
     });
   });
