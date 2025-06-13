@@ -8,13 +8,12 @@
 <!-- ✅ Load EmailJS v4 SDK correctly -->
 <script type="module">
   import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4.0.0/dist/email.min.js';
-
   window.emailjs = emailjs;
-  emailjs.init("dHZgHupkRY9hnhat5"); // Your user ID
-</script>
+  emailjs.init("dHZgHupkRY9hnhat5");
 
-<!-- ✅ Now include email.js after the import is ready -->
-<script type="module" src="email.js"></script>
+  // ✅ Load and run email.js content manually
+  import './email.js';
+</script>
 
 
   <title>Semester Updates & UI</title>
