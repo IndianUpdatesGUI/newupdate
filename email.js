@@ -1,5 +1,8 @@
-// ✅ email.js (v4-compatible and working version)
+// ✅ email.js (CORS Fixed + v4-compatible + Notify animation)
 document.addEventListener("DOMContentLoaded", function () {
+  // ✅ 1. Initialize EmailJS with your PUBLIC KEY
+  emailjs.init("dHZgHupkRY9hnhat5"); // Replace this with your actual EmailJS public key
+
   const lastSelected = {
     person1: null,
     person2: null
@@ -13,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "WAT": "🔔"
   };
 
+  // ✅ 2. Handle status button selection (AL, DG, etc.)
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener("change", function () {
       const parent = this.closest(".person-box");
@@ -31,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // ✅ 3. Handle NOTIFY button
   document.querySelectorAll(".notify-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
@@ -50,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(() => {
           console.log("✅ NOTIFY Email sent");
 
-          // ✅ Animation part
+          // ✅ Animate button
           button.classList.add("clicked");
           button.style.backgroundColor = "#28a745";
           setTimeout(() => {
@@ -62,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // ✅ 4. Handle WAT toggle button
   document.querySelectorAll(".wat-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
