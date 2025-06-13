@@ -51,6 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const emoji = emojiMap[selectedStatus] || "";
       const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
 
+      emailjs.init("dHZgHupkRY9hnhat5"); // Replace this with your actual EmailJS public key
+
+
       emailjs.send("service_cnje7ja", "template_wf9h6xg", { message })
         .then(() => {
           console.log("✅ NOTIFY Email sent");
