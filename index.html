@@ -5,28 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script type="module" src="script.js"></script>
   <!-- EmailJS SDK -->
-<!-- ✅ Load EmailJS v4 SDK correctly -->
- <!-- ✅ Correct EmailJS SDK -->
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-
-
-  <!-- ✅ Your Email Event Handler -->
-  <script type="module" src="email.js"></script>
-
-  <script type="module">
-  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-
-  emailjs.init('1ch1m_pa1yt65kcbk');
-
-  window.sendEmail = (message) => {
-    emailjs.send("service_66oz5wv", "template_ilit6e7", {
-      message: message
-    })
-    .then(() => console.log("✅ Email sent"))
-    .catch((error) => console.error("❌ Email failed:", error));
-  };
-</script>
+<!-- Your EmailJS logic (this file) -->
+<script src="email.js" defer></script>
 
 
   <title>Semester Updates & UI</title>
@@ -73,13 +55,6 @@
       flex-wrap: wrap;
       padding: 20px;
     }
-                                                          /*notification button design*/
-    .notify-button.clicked {
-  background-color: #28a745 !important; /* Green flash */
-  color: white !important;
-  transition: background-color 0.3s ease;
-}
-
 
     .column {
       background: rgba(255, 255, 255, 0.8);
@@ -208,23 +183,16 @@
 <body>
   <h1>Semester Updates</h1>
 
-  <!-- Add this inside your <body> -->
-<button onclick="sendEmail()">Send Email</button>
-  <button onclick="sendEmail('📨 Semester 1 selected AL')">Send AL</button>
-<button onclick="sendEmail('🔴 Semester 2 selected DG')">Send DG</button>
-
-
-
   <!-- DESIGN 1 SECTION -->
   <div class="status-container">
-   <div class="column person-box" data-person="person1" id="person1-box">
+    <div class="column" id="person1-box">
       <h2>1st Semester</h2>
       <div class="horizontal-group">
         <div class="status-option">
           <input type="radio" name="person1" value="AL" onchange="setStatus('person1', this.value)"> AL
         </div>
         <div class="status-option">
-          <input type="checkbox" id="wat1" class="wat-button" onchange="setWatStatus('person1', this.checked)">WAT
+          <input type="checkbox" id="wat1" onchange="setWatStatus('person1', this.checked)"> WAT
         </div>
       </div>
       <div class="status-option">
@@ -240,20 +208,16 @@
         <div id="person1-wat-time" class="timestamp"></div>
         <div id="person1-time" class="timestamp"></div>
       </div>
-      <button class="notify-button" style="margin-top: 10px; padding: 6px 12px; background-color: #f0c14b; border: none; border-radius: 5px; font-weight: bold;">
-  NOTIFY
-</button>
-
     </div>
 
-    <div class="column person-box" data-person="person2" id="person2-box">
+    <div class="column" id="person2-box">
       <h2>2nd Semester</h2>
       <div class="horizontal-group">
         <div class="status-option">
           <input type="radio" name="person2" value="AL" onchange="setStatus('person2', this.value)"> AL
         </div>
         <div class="status-option">
-          <input type="checkbox" id="wat2" class="wat-button" onchange="setWatStatus('person2', this.checked)"> WAT
+          <input type="checkbox" id="wat2" onchange="setWatStatus('person2', this.checked)"> WAT
         </div>
       </div>
       <div class="status-option">
@@ -269,10 +233,6 @@
         <div id="person2-wat-time" class="timestamp"></div>
         <div id="person2-time" class="timestamp"></div>
       </div>
-      <button class="notify-button" style="margin-top: 10px; padding: 6px 12px; background-color: #f0c14b; border: none; border-radius: 5px; font-weight: bold;">
-  NOTIFY
-</button>
-
     </div>
   </div>
 
@@ -292,22 +252,6 @@
       <button class="reset-btn" onclick="resetBox('2')">RESET</button>
     </div>
   </div>
-
-  <form id="emailForm" action="https://formspree.io/f/mldnbzvr" method="POST">
-  <input type="hidden" name="message" id="emailMessage">
-  <button type="submit" style="display:none;"></button>
-</form>
-
-  <script src="email.js"></script>
-</body>
-
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script>
-  emailjs.init("1ch1m_pa1yt65kcbk"); // Your Public Key
-</script>
-<script src="script.js"></script> <!-- Or include the JavaScript below inline -->
-
-
 
 
 </body>
