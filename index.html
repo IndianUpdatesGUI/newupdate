@@ -14,6 +14,20 @@
   <!-- ✅ Your Email Event Handler -->
   <script type="module" src="email.js"></script>
 
+  <script type="module">
+  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+
+  emailjs.init('1ch1m_pa1yt65kcbk');
+
+  window.sendEmail = (message) => {
+    emailjs.send("service_66oz5wv", "template_ilit6e7", {
+      message: message
+    })
+    .then(() => console.log("✅ Email sent"))
+    .catch((error) => console.error("❌ Email failed:", error));
+  };
+</script>
+
 
   <title>Semester Updates & UI</title>
 
