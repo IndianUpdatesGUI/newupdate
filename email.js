@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   const formEndpoint = "https://formspree.io/f/mldnbzvr";
 
+  // Load from localStorage (after refresh)
   const lastSelected = {
-    person1: null,
-    person2: null
+    person1: localStorage.getItem("last_person1") || null,
+    person2: localStorage.getItem("last_person2") || null
   };
 
   function sendEmail(message) {
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Radio buttons (AL, DG, SL, etc.)
+  // Radio buttons
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener("change", function () {
       const parent = this.closest(".person-box");
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const selectedStatus = this.value;
 
       lastSelected[person] = selectedStatus;
+      localStorage.setItem(`last_${person}`, selectedStatus); // Save to localStorage
 
       const message = `${personLabel} selected ${selectedStatus}`;
       sendEmail(message);
@@ -64,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // WAT toggle
+  // WAT toggle button
   document.querySelectorAll(".wat-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
@@ -76,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isActive) {
         const message = `${personLabel} selected WAT`;
         lastSelected[person] = "WAT";
+        localStorage.setItem(`last_${person}`, "WAT");
         sendEmail(message);
       }
     });
