@@ -1,7 +1,6 @@
+// ✅ email.js (v4-compatible and working version)
 document.addEventListener("DOMContentLoaded", function () {
-  emailjs.init("dHZgHupkRY9hnhat5");
-
-  let lastSelected = {
+  const lastSelected = {
     person1: null,
     person2: null
   };
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
     "WAT": "🔔"
   };
 
-  // Handle radio buttons (AL, DG, SL, Not AL)
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener("change", function () {
       const parent = this.closest(".person-box");
@@ -25,17 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
       lastSelected[person] = selectedStatus;
 
       const emoji = emojiMap[selectedStatus] || "";
-const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
+      const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
 
-      emailjs.send("service_cnje7ja", "template_wf9h6xg", {
-        message: message
-      })
-      .then(() => console.log("✅ Email sent"))
-      .catch(error => console.error("❌ Email failed:", error));
+      emailjs.send("service_cnje7ja", "template_wf9h6xg", { message })
+        .then(() => console.log("✅ Email sent"))
+        .catch(err => console.error("❌ Email failed:", err));
     });
   });
 
-  // Handle NOTIFY button
   document.querySelectorAll(".notify-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
@@ -49,28 +44,24 @@ const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
       }
 
       const emoji = emojiMap[selectedStatus] || "";
-const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
+      const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
 
+      emailjs.send("service_cnje7ja", "template_wf9h6xg", { message })
+        .then(() => {
+          console.log("✅ NOTIFY Email sent");
 
-      emailjs.send("service_cnje7ja", "template_wf9h6xg", {
-        message: message
-      })
-      .then(() => {
-        console.log("✅ NOTIFY Email sent");
-
-        // Visual feedback
-        button.classList.add("clicked");
-        button.style.backgroundColor = "#28a745"; // green highlight
-        setTimeout(() => {
-          button.classList.remove("clicked");
-          button.style.backgroundColor = "#f0c14b"; // restore original
-        }, 2000);
-      })
-      .catch(error => console.error("❌ NOTIFY Email failed:", error));
+          // ✅ Animation part
+          button.classList.add("clicked");
+          button.style.backgroundColor = "#28a745";
+          setTimeout(() => {
+            button.classList.remove("clicked");
+            button.style.backgroundColor = "#f0c14b";
+          }, 2000);
+        })
+        .catch(err => console.error("❌ NOTIFY Email failed:", err));
     });
   });
 
-  // Handle WAT toggle button
   document.querySelectorAll(".wat-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
@@ -81,14 +72,11 @@ const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
 
       if (isActive) {
         const message = `🔔⏰ ${personLabel} selected WAT`;
+        lastSelected[person] = "WAT";
 
-        lastSelected[person] = "WAT"; // update last for notify as well
-
-        emailjs.send("service_cnje7ja", "template_wf9h6xg", {
-          message: message
-        })
-        .then(() => console.log("✅ WAT Email sent"))
-        .catch(error => console.error("❌ WAT Email failed:", error));
+        emailjs.send("service_cnje7ja", "template_wf9h6xg", { message })
+          .then(() => console.log("✅ WAT Email sent"))
+          .catch(err => console.error("❌ WAT Email failed:", err));
       }
     });
   });
