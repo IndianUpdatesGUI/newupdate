@@ -1,7 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
   const formEndpoint = "https://formspree.io/f/mldnbzvr";
 
-  // Load from localStorage (after refresh)
+  // Emoji mapping
+  const emojiMap = {
+    "AL": "🟢",
+    "DG": "🔴",
+    "Not AL": "🔵",
+    "SL": "🟡",
+    "WAT": "🔔"
+  };
+
+  // Load last selected from localStorage
   const lastSelected = {
     person1: localStorage.getItem("last_person1") || null,
     person2: localStorage.getItem("last_person2") || null
@@ -33,9 +42,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const selectedStatus = this.value;
 
       lastSelected[person] = selectedStatus;
-      localStorage.setItem(`last_${person}`, selectedStatus); // Save to localStorage
+      localStorage.setItem(`last_${person}`, selectedStatus);
 
-      const message = `${personLabel} selected ${selectedStatus}`;
+      const emoji = emojiMap[selectedStatus] || "";
+      const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
       sendEmail(message);
     });
   });
@@ -53,7 +63,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      const message = `${personLabel} selected ${selectedStatus}`;
+      const emoji = emojiMap[selectedStatus] || "";
+      const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
       sendEmail(message);
 
       // Animation
@@ -66,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // WAT toggle button
+  // WAT toggle
   document.querySelectorAll(".wat-button").forEach(button => {
     button.addEventListener("click", function () {
       const parent = this.closest(".person-box");
@@ -76,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const isActive = this.classList.toggle("active");
 
       if (isActive) {
-        const message = `${personLabel} selected WAT`;
+        const message = `🔔⏰ ${personLabel} selected WAT 🔔`;
         lastSelected[person] = "WAT";
         localStorage.setItem(`last_${person}`, "WAT");
         sendEmail(message);
