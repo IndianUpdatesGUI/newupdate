@@ -192,6 +192,10 @@
 <body>
   <h1>Semester Updates</h1>
 
+  <!-- Add this inside your <body> -->
+<button onclick="sendEmail()">Send Email</button>
+
+
   <!-- DESIGN 1 SECTION -->
   <div class="status-container">
    <div class="column person-box" data-person="person1" id="person1-box">
@@ -277,6 +281,12 @@
 
   <script src="email.js"></script>
 </body>
+
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  emailjs.init("1ch1m_pa1yt65kcbk"); // Your Public Key
+</script>
+<script src="script.js"></script> <!-- Or include the JavaScript below inline -->
 
 
 
