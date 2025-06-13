@@ -6,14 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
     person2: null
   };
 
-  const emojiMap = {
-    "AL": "🟢",
-    "DG": "🔴",
-    "Not AL": "🔵",
-    "SL": "🟡",
-    "WAT": "🔔"
-  };
-
   function sendEmail(message) {
     fetch(formEndpoint, {
       method: "POST",
@@ -31,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Radio buttons
+  // Radio buttons (AL, DG, SL, etc.)
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener("change", function () {
       const parent = this.closest(".person-box");
@@ -41,8 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       lastSelected[person] = selectedStatus;
 
-      const emoji = emojiMap[selectedStatus] || "";
-      const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
+      const message = `${personLabel} selected ${selectedStatus}`;
       sendEmail(message);
     });
   });
@@ -60,8 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      const emoji = emojiMap[selectedStatus] || "";
-      const message = `${emoji} ${personLabel} selected ${selectedStatus} ${emoji}`;
+      const message = `${personLabel} selected ${selectedStatus}`;
       sendEmail(message);
 
       // Animation
@@ -84,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const isActive = this.classList.toggle("active");
 
       if (isActive) {
-        const message = `🔔⏰ ${personLabel} selected WAT`;
+        const message = `${personLabel} selected WAT`;
         lastSelected[person] = "WAT";
         sendEmail(message);
       }
