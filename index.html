@@ -6,15 +6,14 @@
   <script type="module" src="script.js"></script>
   <!-- EmailJS SDK -->
 <!-- ✅ Load EmailJS v4 SDK correctly -->
-<script type="module">
-  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4.0.0/+esm';
-  window.emailjs = emailjs;
-  emailjs.init("dHZgHupkRY9hnhat5");
+ <!-- ✅ Correct EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init("dHZgHupkRY9hnhat5");
+  </script>
 
-  // Load your email.js after emailjs is ready
-  import './email.js';
-</script>
-
+  <!-- ✅ Your Email Event Handler -->
+  <script type="module" src="email.js"></script>
 
 
   <title>Semester Updates & UI</title>
