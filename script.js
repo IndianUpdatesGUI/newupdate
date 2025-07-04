@@ -26,6 +26,8 @@ function getCurrentTime() {
   return `${hours}:${minutes} ${ampm}`;
 }
 
+//main 
+
 // MAIN STATUS radio buttons
 function setStatus(person, value) {
   const timestamp = getCurrentTime();
