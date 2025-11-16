@@ -17,6 +17,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// --- Register service worker (so mobile can show system notifications) ---
+let swRegistration = null;
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => {
+      console.log('Service Worker registered at /sw.js', reg);
+      swRegistration = reg;
+    })
+    .catch(err => {
+      console.warn('Service Worker registration failed:', err);
+    });
+} else {
+  console.log('Service Worker not supported in this browser.');
+}
+
+
 // Utility function to get current time
 function getCurrentTime() {
   const now = new Date();
@@ -217,3 +233,127 @@ window.CURRENT_USER = window.CURRENT_USER || 'person1'; // change to 'person2' o
   // Hook button
   notifyBtn.addEventListener('click', (e) => { e.preventDefault(); broadcastNotification(); });
 })();
+
+
+// ===== Service-worker-enabled notifications + toast fallback =====
+// (Paste this near the bottom of script.js, after your window.* exposures)
+
+window.CURRENT_USER = window.CURRENT_USER || 'person1'; // change on other client to 'person2' if you want
+
+// Simple toast helper (visible on page if system notifications fail)
+function showToast(text) {
+  let container = document.getElementById('notify-toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'notify-toast-container';
+    Object.assign(container.style, {
+      position: 'fixed',
+      right: '18px',
+      bottom: '18px',
+      zIndex: 99999,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px',
+      alignItems: 'flex-end',
+      pointerEvents: 'none'
+    });
+    document.body.appendChild(container);
+  }
+  const t = document.createElement('div');
+  t.textContent = text;
+  Object.assign(t.style, {
+    background: 'linear-gradient(90deg,#111827,#1f2937)',
+    color: 'white',
+    padding: '10px 14px',
+    borderRadius: '10px',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+    pointerEvents: 'auto',
+    maxWidth: '320px',
+    fontFamily: 'Poppins, sans-serif',
+    fontSize: '14px'
+  });
+  container.appendChild(t);
+  setTimeout(() => { try { t.remove(); } catch(_) {} }, 5000);
+}
+
+// Try to show a system notification. Prefer Service Worker registration on mobile.
+async function tryShowSystemNotification(payload) {
+  if (!('Notification' in window)) return false;
+  // permission flow
+  if (Notification.permission === 'denied') return false;
+  if (Notification.permission === 'default') {
+    const p = await Notification.requestPermission();
+    if (p !== 'granted') return false;
+  }
+
+  // Prefer service worker (better for Android/Chromium mobile browsers)
+  if (swRegistration && typeof swRegistration.showNotification === 'function') {
+    try {
+      swRegistration.showNotification(payload.title || 'Update', {
+        body: payload.body || '',
+        tag: payload.tag || 'broadcast-notify',
+        data: payload.data || {}
+      });
+      return true;
+    } catch (err) {
+      console.error('swRegistration.showNotification error', err);
+      // fallthrough to Notification()
+    }
+  }
+
+  // Fallback to in-page Notification()
+  try {
+    new Notification(payload.title || 'Update', { body: payload.body || '', tag: payload.tag || 'broadcast-notify' });
+    return true;
+  } catch (err) {
+    console.error('Notification constructor error:', err);
+    return false;
+  }
+}
+
+// Call this to show notification or fallback toast
+async function showNotificationOrToast(payload) {
+  const ok = await tryShowSystemNotification(payload);
+  if (!ok) {
+    showToast(`${payload.title || 'Update'} — ${payload.body || ''}`);
+  }
+}
+
+// Broadcast (push entry to Firebase) — no change here from before
+async function broadcastNotification() {
+  const payload = {
+    title: 'Manipal Update',
+    body: `${window.CURRENT_USER} clicked notify`,
+    sender: window.CURRENT_USER,
+    createdAt: Date.now()
+  };
+  try {
+    await push(ref(db, 'notifications'), payload);
+    console.log('Pushed notification:', payload);
+  } catch (err) {
+    console.error('Push error', err);
+    showToast('Failed to push notification (check console).');
+  }
+}
+
+// Listen for new notifications in DB and show them
+const listenerStartTS = Date.now();
+const notificationsRef = ref(db, 'notifications');
+onChildAdded(notificationsRef, (snap) => {
+  const data = snap.val();
+  if (!data) return;
+  if (!data.createdAt || data.createdAt <= listenerStartTS) return;
+  // show via service worker or fallback
+  showNotificationOrToast(data);
+});
+
+// Hook button (keep the existing notify btn logic)
+const notifyBtn = document.getElementById('notifyBtn');
+if (notifyBtn) {
+  notifyBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    broadcastNotification();
+  });
+} else {
+  console.warn('notifyBtn not found — notifications disabled.');
+}
