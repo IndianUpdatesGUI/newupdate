@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
 
 // Firebase Config
 const firebaseConfig = {
@@ -137,3 +138,82 @@ window.setStatus = setStatus;
 window.setWatStatus = setWatStatus;
 window.updateTime = updateTime;
 window.resetBox = resetBox;
+
+// -------------------------------
+// Notify button (broadcast to all open clients)
+// Paste AFTER your window.setStatus / window.resetBox exposures (bottom of script.js)
+// -------------------------------
+
+// Set a simple CURRENT_USER id; change manually on the other client or set via dev console
+window.CURRENT_USER = window.CURRENT_USER || 'person1'; // change to 'person2' on other client if you want
+
+(function setupClickBroadcastNotifications() {
+  const notifyBtn = document.getElementById('notifyBtn');
+  if (!notifyBtn) {
+    console.warn('notifyBtn not found — notifications disabled.');
+    return;
+  }
+
+  // Ensure browser permissions
+  async function ensurePermission() {
+    if (!('Notification' in window)) {
+      alert('This browser does not support notifications.');
+      return false;
+    }
+    if (Notification.permission === 'granted') return true;
+    if (Notification.permission === 'denied') {
+      alert('Notifications are blocked for this site. Enable them in browser/site settings.');
+      return false;
+    }
+    const p = await Notification.requestPermission();
+    return p === 'granted';
+  }
+
+  // Show native notification
+  function showNativeNotification(data) {
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+    try {
+      const n = new Notification(data.title || 'Update', {
+        body: data.body || 'Someone clicked notify',
+        tag: data.tag || 'broadcast-notify',
+        // icon: '/icons/icon-192.png'
+      });
+      n.onclick = (e) => { e.preventDefault(); window.focus(); n.close(); };
+      setTimeout(() => { try { n.close(); } catch(_) {} }, 6000);
+    } catch (err) {
+      console.error('Notification show error', err);
+    }
+  }
+
+  // Write a notification record to Firebase
+  async function broadcastNotification() {
+    const ok = await ensurePermission();
+    if (!ok) return;
+    const payload = {
+      title: 'Manipal Update',
+      body: `${window.CURRENT_USER} clicked notify`,
+      sender: window.CURRENT_USER,
+      createdAt: Date.now()
+    };
+    push(ref(db, 'notifications'), payload)
+      .then(() => console.log('Pushed notification:', payload))
+      .catch(err => console.error('Push error', err));
+  }
+
+  // Ignore old notifications present before listener started
+  const listenerStartTS = Date.now();
+  const notificationsRef = ref(db, 'notifications');
+
+  // Listen for new child entries and show notification
+  onChildAdded(notificationsRef, (snap) => {
+    const data = snap.val();
+    if (!data) return;
+    if (!data.createdAt || data.createdAt <= listenerStartTS) return;
+    // show on all clients (including sender)
+    showNativeNotification(data);
+  });
+
+  // Hook button
+  notifyBtn.addEventListener('click', (e) => { e.preventDefault(); broadcastNotification(); });
+})();
