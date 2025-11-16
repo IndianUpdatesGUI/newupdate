@@ -1,102 +1,191 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script type="module" src="script.js"></script>
+  <!-- EmailJS SDK -->
+
   <title>Semester Updates & UI</title>
 
+  <!-- Triggering rebuild -->
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body, html {
-      margin: 0; padding: 0; min-height: 100vh;
-      background: url('college-bg.jpg') no-repeat center center fixed;
-      background-size: cover; background-attachment: fixed;
-      font-family: 'Poppins', sans-serif; height: 100%;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
+
+    body, html {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: url('college-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  font-family: 'Poppins', sans-serif;
+  height: 100%;
+}
+
 
     h1 {
-      text-align: center; color: #0a0000; margin: 20px 0; font-weight: bold;
-      text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+      text-align: center;
+      color: #0a0000;
+      margin: 20px 0;
+      font-weight: bold;
+      text-shadow:
+        -1px -1px 0 #fff,
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff;
     }
 
-    .status-container { display: flex; justify-content: space-around; flex-wrap: wrap; padding: 20px; }
+    /* DESIGN 1 STYLES */
+    .status-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
 
     .column {
-      background: rgba(255,255,255,0.8); padding: 20px; border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2); width: 45%; margin: 10px 0;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      width: 45%;
+      margin: 10px 0;
     }
 
-    .column h2 { text-align: center; margin-bottom: 30px; text-shadow: -1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff; }
+    .column h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      text-shadow:
+        -1px -1px 0 #fff,
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff;
+    }
 
-    .status-option { display:flex; align-items:center; margin-bottom:15px; font-weight:bold; }
-    .status-option input[type="radio"], .status-option input[type="checkbox"] { transform: scale(1.5); margin-right:12px; cursor:pointer; }
-    .horizontal-group { display:flex; align-items:center; margin-bottom:15px; }
-    .horizontal-group .status-option { margin:0; margin-right:30px; }
-    .timestamp-wrapper { padding-left:20px; }
-    .timestamp { margin-top:5px; font-size:14px; font-weight:bold; color:#000000; }
+    .status-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
 
+    .status-option input[type="radio"], .status-option input[type="checkbox"] {
+      transform: scale(1.5);
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .horizontal-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .horizontal-group .status-option {
+      margin: 0;
+      margin-right: 30px;
+    }
+
+    .timestamp-wrapper {
+      padding-left: 20px;
+    }
+
+    .timestamp {
+      margin-top: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000000;
+    }
+
+    /* DESIGN 2 STYLES */
     .message-container {
-      width: 100%; display:flex; justify-content:center; gap: 40px; flex-wrap:wrap;
-      margin-top: 60px; margin-bottom: 10px; font-family:'Poppins',sans-serif;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 60px;
+      margin-bottom: 60px;
+      font-family: 'Poppins', sans-serif;
     }
 
     .box {
-      background: rgba(255,255,255,0.9); border-radius:15px; padding:20px; box-shadow:0 4px 8px rgba(0,0,0,0.2);
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       width: 250px;
     }
 
-    .header { font-weight:bold; font-size:18px; margin-bottom:10px; }
+    .header {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
 
     .message {
-      width:100%; min-height:80px; padding:10px; font-size:16px; font-family:'Poppins',sans-serif;
-      border:1px solid #ccc; border-radius:8px; margin-bottom:10px; resize:vertical; line-height:1.5;
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+
+    .reset-btn {
+      width: 100%;
+      padding: 8px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    .reset-btn { width:100%; padding:8px; background-color:#007BFF; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; }
-    .reset-btn:hover { background-color:#0056b3; }
-
-    /* NEW: notify button styles */
-    .notify-wrapper {
-      width:100%;
-      display:flex;
-      justify-content:center;
-      margin: 18px 0 30px 0;
-    }
-    .notify-btn {
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background: linear-gradient(135deg,#383f7b 0%, #3f3474 100%);
-      color:#ffffff;
-      border:none;
-      padding: 12px 20px;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(229,46,113,0.25);
-      font-weight:700;
-      cursor:pointer;
-      font-family:'Poppins',sans-serif;
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .notify-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(229,46,113,0.28); }
-    .notify-icon {
-      width:18px; height:18px; display:inline-block; border-radius:4px; background:rgba(255,255,255,0.2);
-      display:flex; align-items:center; justify-content:center; font-size:12px;
+    .reset-btn:hover {
+      background-color: #0056b3;
     }
 
-    @media (max-width:768px) {
-      .status-container { flex-direction:column; align-items:center; }
-      .column { width:90%; }
-      .message-container { flex-direction:column; align-items:center; gap:20px; }
+    @media (max-width: 768px) {
+      .status-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .column {
+        width: 90%;
+      }
+
+      .message-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Semester Updates</h1>
 
-  <!-- STATUS (unchanged) -->
+  <!-- DESIGN 1 SECTION -->
   <div class="status-container">
     <div class="column" id="person1-box">
       <h2>1st Semester</h2>
@@ -149,28 +238,24 @@
     </div>
   </div>
 
-  <!-- MESSAGE BOXES -->
+  
+
+  <!-- DESIGN 2 SECTION -->
   <div class="message-container">
     <div class="box" id="semester1Box">
       <div class="header">Semester 1 <span class="timestamp" id="time1"></span></div>
-      <textarea class="message" id="msg1" placeholder="" oninput="updateTime('1')"></textarea>
-      <button class="reset-btn" onclick="resetBox('1')">RESET</button>
+   <textarea class="message" id="msg1" placeholder="" oninput="updateTime('1')"></textarea>
+     <button class="reset-btn" onclick="resetBox('1')">RESET</button>
     </div>
-
     <div class="box" id="semester2Box">
       <div class="header">Semester 2 <span class="timestamp" id="time2"></span></div>
-      <textarea class="message" id="msg2" placeholder="" oninput="updateTime('2')"></textarea>
+   <textarea class="message" id="msg2" placeholder="" oninput="updateTime('2')"></textarea>
+
+
       <button class="reset-btn" onclick="resetBox('2')">RESET</button>
     </div>
   </div>
 
-  <!-- NOTIFY BUTTON - centered and visually integrated -->
-  <div class="notify-wrapper">
-    <button id="notifyBtn" class="notify-btn" title="Click to send a notify to all online users">
-      <span class="notify-icon">🔔</span>
-      Send Notification
-    </button>
-  </div>
 
 </body>
 </html>
